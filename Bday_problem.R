@@ -1,3 +1,4 @@
+# comment your code!
 require('boot')
 simulate.room<- function(statistics, birthday.probs = rep(1,365)/365, number.people = 20, iterations = 10){
   if (abs(sum(birthday.probs)-1)>1e-20){

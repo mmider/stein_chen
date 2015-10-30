@@ -22,6 +22,10 @@ no.quadruple <- function(x){
 }
 summary.bday.simulation(no.quadruple, number.people = 187, iterations = 1e4)
 
+# EDIT I actually realised that case (50,3,365) does not give ~50%
+# hance of occurence and a number which does will probably give us 
+# bound which would be quite useless as well
+
 # 3 cases giving ~50% of non-occurence for k=2,3,4. First two
 # have similar n^(k+1)/d^k ratios. The last one has a hundred times
 # inflated one:

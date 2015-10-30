@@ -20,5 +20,36 @@ summary.bday.simulation(no.triple, number.people = 50, iterations = 1e4)
 no.quadruple <- function(x){
   return(no.same.day.bday(x,4))
 }
-summary.bday.simulation(no.quadruple, number.people = 186, iterations = 1e4)
+summary.bday.simulation(no.quadruple, number.people = 187, iterations = 1e4)
+
+# 3 cases giving ~50% of non-occurence for k=2,3,4. First two
+# have similar n^(k+1)/d^k ratios. The last one has a hundred times
+# inflated one:
+tv.bound.no.occurence(23,2,365)
+
+tv.bound.no.occurence(50,3,365)
+
+tv.bound.no.occurence(187,4,365)
+
+# ratio 1
+23^3/365^2
+# ratio 2
+50^4/365^3
+# ratio 3
+187^5/365^4
+
+# this might be the reason why the bound for the third case is 
+# so hopeless
+
+# let us fix ratio to n^(k+1)/d^k to something in the vicinity of 0.1
+# and let's increase n and d simultaneously
+k <- 2
+d <- floor(exp(2:20))
+n <- (0.1*d^k)^(1/(1+k))
+n[19]
+# then the bounds decrease quite nicely
+mapply(function(n,d) tv.bound.no.occurence(n,k,d),n,d)
+
+
+
 

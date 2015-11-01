@@ -8,7 +8,8 @@ seq.alt <- function(a, b){
     return(NULL)
 }
 
-simulate.room<- function(statistics, birthday.probs = rep(1,365)/365, number.people = 20, iterations = 10){
+simulate.room<- function(statistics, birthday.probs = rep(1,365)/365, number.people = 20, iterations = 10, ...){
+  # ... allows 'k' to be passed as an argument to the statistics function
   # the aim is to do an MC simulation for an event tested with statistics function
   # and return a vector of 1's and 0's where 1 - event happened in a given room
   # 0 - event hasn't happened
@@ -27,7 +28,7 @@ simulate.room<- function(statistics, birthday.probs = rep(1,365)/365, number.peo
     room <- sample(1:length(birthday.probs), size = number.people, replace = T, prob = birthday.probs)
     # test whether a particular event has happened in a room
     # and store it in a list
-    room.statistics[[i]]<-statistics(room)
+    room.statistics[[i]]<-statistics(room, ...)
   }
   return(room.statistics)
 }
@@ -52,12 +53,13 @@ same.day.bday <- function(x, k = 2){
 
 no.same.day.bday <- function(x, k = 2){
   # test function
-  # test whether no two people share the same bday ina room
+  # test whether no two people share the same bday in a room
   return(1-same.day.bday(x, k = k))
 }
 
 
-summary.bday.simulation<- function(statistics, birthday.probs = rep(1,365)/365, number.people = 20, iterations = 10, boot.iter = 1e3){
+summary.bday.simulation<- function(statistics, birthday.probs = rep(1,365)/365, number.people = 20, iterations = 10, boot.iter = 1e3, ...){
+  # ... allows 'k' to be passed as an argument to the statistics function
   # main function - summary
   # returns 95% confidence interval from bootstrap
   mean.special<- function(data, indices){
@@ -66,7 +68,7 @@ summary.bday.simulation<- function(statistics, birthday.probs = rep(1,365)/365, 
     return(mean(d))
   }
   # do MC simulation of the event tested with statistics function
-  many.rooms <- simulate.room(statistics, birthday.probs = birthday.probs, number.people = number.people, iterations = iterations)
+  many.rooms <- simulate.room(statistics, birthday.probs = birthday.probs, number.people = number.people, iterations = iterations, ...)
   # bootstrap the result
   result <- boot(data = unlist(many.rooms), statistic = mean.special, R = boot.iter)
   # return 95% confidence interval

@@ -96,15 +96,19 @@ vector<double> bootstrap_mean_ci(vector<int> vec, const int iter_num, double cer
 
 
 //[[Rcpp::export]]
-NumericVector Bday_MC(NumericVector out, int iterations = 1e4,
-int num_days_in_year = 365, int room_size = 187, int iter_num = 100,
-int bday_coincidences = 4,double confidence_level = 0.95)
+NumericVector Bday_MC(NumericVector out, int n = 23, int k = 2, int d = 365, 
+                      int iterations = 1e4, int iter_num = 100, double confidence_level = 0.95)
 {	
 	/* IMPORTANT : you have to pass a vector "out" of length 3. silly, but I am not sure how to do it otherwise. 
    * declare vector of indices, where for each room there will be an indicator
 	 * telling whether a particular event tested with "statistics" fuction
 	 * has happened in a given room
 	 */
+	
+	int num_days_in_year = d;
+  int room_size = n;
+  int bday_coincidences = k;  
+	
 	vector<int> statistics;
 	for (int i = 0; i< iterations;i++)
 	{

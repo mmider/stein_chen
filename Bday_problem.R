@@ -33,6 +33,28 @@ simulate.room<- function(statistics, birthday.probs = rep(1,365)/365, number.peo
   return(room.statistics)
 }
 
+simulate.room.d<- function(statistics, d = 365, number.people = 20, iterations = 10, ...){
+  # ... allows 'k' to be passed as an argument to the statistics function
+  # uniform birthday distribution
+  # the aim is to do an MC simulation for an event tested with statistics function
+  # and return a vector of 1's and 0's where 1 - event happened in a given room
+  # 0 - event hasn't happened
+
+  # declare list, where for each room there will be an indicator
+  # telling whether a particular event tested with "statistics" fuction
+  # has happened in a given room
+  room.statistics <- list()
+  for (i in 1:iterations){
+    # create sample room and populate it with people
+    # the vector contains days of birth of each person in a room
+    room <- sample(1:d, size = number.people, replace = T)
+    # test whether a particular event has happened in a room
+    # and store it in a list
+    room.statistics[[i]]<-statistics(room, ...)
+  }
+  return(room.statistics)
+}
+
 bdays.summary <- function(x){
   # helper function to change the format from a vector with numbers
   # to a summary table with dates of birth listed in the first column
@@ -74,6 +96,25 @@ summary.bday.simulation<- function(statistics, birthday.probs = rep(1,365)/365, 
   # return 95% confidence interval
   return(boot.ci(result, conf = 0.95, type = "basic"))
 }
+
+summary.bday.simulation.d<- function(statistics, d = 365, number.people = 20, iterations = 10, boot.iter = 1e3, ...){
+  # ... allows 'k' to be passed as an argument to the statistics function
+  # uniform birthday distribution
+  # main function - summary
+  # returns 95% confidence interval from bootstrap
+  mean.special<- function(data, indices){
+    # helper function to pass "mean" to boot
+    d <- data[indices]
+    return(mean(d))
+  }
+  # do MC simulation of the event tested with statistics function
+  many.rooms <- simulate.room.d(statistics, d = d, number.people = number.people, iterations = iterations, ...)
+  # bootstrap the result
+  result <- boot(data = unlist(many.rooms), statistic = mean.special, R = boot.iter)
+  # return 95% confidence interval
+  return(boot.ci(result, conf = 0.95, type = "basic"))
+}
+
 
 ##################
 # From this point onwards we assume that probabilities of births are uniform

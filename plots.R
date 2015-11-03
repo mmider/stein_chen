@@ -6,6 +6,7 @@ pn.n1$plot
 
 n2 <- seq(40, 60, by=2)
 pn.n2 <- graph.n(n2, k=3)
+pn.n2$plot
 
 d3 <- seq(150,750,by=50)
 pd.d3 <- graph.d(d=d3)
@@ -22,7 +23,7 @@ pd.50.3.d4$plot
 
 n3 <- seq(100, 5000, 100)
 pnd.n1 <- graph.nd(n1)
-graph.nd(n3)
+pnd.n1$plot
 
 for (i in 1:length(n3)) {
   print(n3[i])

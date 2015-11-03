@@ -44,8 +44,8 @@ graph.n <- function(n, k = 2, d = 365, ...) {
   }
   
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- min(1, upper_CI + 0.05)
-  lower_CI_0.05 <- max(0, lower_CI - 0.05)
+  upper_CI_0.05 <- pmin(1, upper_CI + 0.05)
+  lower_CI_0.05 <- pmax(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
   df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI), d=d, k=k)
@@ -94,8 +94,8 @@ graph.d <- function(n = 23, k = 2, d, ...) {
     }
 
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- min(1, upper_CI + 0.05)
-  lower_CI_0.05 <- max(0, lower_CI - 0.05)
+  upper_CI_0.05 <- pmin(1, upper_CI + 0.05)
+  lower_CI_0.05 <- pmax(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
   df_CI <- data.frame(d=rep(d,2), y=c(upper_CI, lower_CI), n=n, k=k)
@@ -148,8 +148,8 @@ graph.nd <- function(n, k = 2, ratio = 0.1, ...) {
   }
   
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- min(1, upper_CI + 0.05)
-  lower_CI_0.05 <- max(0, lower_CI - 0.05)
+  upper_CI_0.05 <- pmin(1, upper_CI + 0.05)
+  lower_CI_0.05 <- pmax(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
   df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI), k=k)

@@ -2,6 +2,7 @@ source("plotting_functions.R")
 
 n1 <- seq(11,31,by=2)
 pn.n1 <- graph.n(n1)
+pn.n1$plot
 
 n2 <- seq(40, 60, by=2)
 pn.n2 <- graph.n(n2, k=3)
@@ -60,3 +61,6 @@ graph_list_d <- list(pd.d3, pd.d4, pd.50.3.d4)
 graph.n_facet(graph_list, "k")
 
 graph.d_facet(graph_list_d, "n")
+
+
+

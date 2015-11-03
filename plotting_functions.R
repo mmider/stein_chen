@@ -1,5 +1,6 @@
 library(Rcpp)
 library(ggplot2)
+library(grid)
 sourceCpp("Bday_prob.cpp")
 source("Bday_problem.R")
 
@@ -43,19 +44,19 @@ graph.n <- function(n, k = 2, d = 365, ...) {
   }
   
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- upper_CI + 0.05
-  lower_CI_0.05 <- lower_CI - 0.05
+  upper_CI_0.05 <- min(1, upper_CI + 0.05)
+  lower_CI_0.05 <- max(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
-  df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI))
-  df_lim <- data.frame(n=rep(n,2), y=c(upper_lim, lower_lim), bound=bound)
-  df_0.05 <- data.frame(n=rep(n,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound)
+  df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI), d=d, k=k)
+  df_lim <- data.frame(n=rep(n,2), y=c(upper_lim, lower_lim), bound=bound, d=d, k=k)
+  df_0.05 <- data.frame(n=rep(n,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound, d=d, k=k)
   
   # create and return plot
   q <- ggplot(NULL, aes(n, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
   q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=n, colour="CI"))
   q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
-  q
+  return(list(plot = q, df_CI = df_CI, df_lim = df_lim, df_0.05 = df_0.05))
 }
 
 # plots theoretical Stein-Chen limits and simulation CIs, for probability that no k of n people share a birthday,
@@ -93,19 +94,19 @@ graph.d <- function(n = 23, k = 2, d, ...) {
     }
 
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- upper_CI + 0.05
-  lower_CI_0.05 <- lower_CI - 0.05
+  upper_CI_0.05 <- min(1, upper_CI + 0.05)
+  lower_CI_0.05 <- max(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
-  df_CI <- data.frame(d=rep(d,2), y=c(upper_CI, lower_CI))
-  df_lim <- data.frame(d=rep(d,2), y=c(upper_lim, lower_lim), bound=bound)
-  df_0.05 <- data.frame(d=rep(d,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound)
+  df_CI <- data.frame(d=rep(d,2), y=c(upper_CI, lower_CI), n=n, k=k)
+  df_lim <- data.frame(d=rep(d,2), y=c(upper_lim, lower_lim), bound=bound, n=n, k=k)
+  df_0.05 <- data.frame(d=rep(d,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound, n=n, k=k)
   
   # create and return plot
   q <- ggplot(NULL, aes(d, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
   q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=d, colour="CI"))
   q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
-  q
+  return(list(plot = q, df_CI = df_CI, df_lim = df_lim, df_0.05 = df_0.05))
 }
 
 # plots theoretical Stein-Chen limits and simulation CIs, for probability that no k people share a birthday,
@@ -147,19 +148,19 @@ graph.nd <- function(n, k = 2, ratio = 0.1, ...) {
   }
   
   # to determine if Stein-Chen bounds are 'good', want to check they are no more than 0.05 away from simulated probability
-  upper_CI_0.05 <- upper_CI + 0.05
-  lower_CI_0.05 <- lower_CI - 0.05
+  upper_CI_0.05 <- min(1, upper_CI + 0.05)
+  lower_CI_0.05 <- max(0, lower_CI - 0.05)
   
   # put calculations in data frames, in suitable format for passing to ggplot2
-  df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI))
-  df_lim <- data.frame(n=rep(n,2), y=c(upper_lim, lower_lim), bound=bound)
-  df_0.05 <- data.frame(n=rep(n,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound)
+  df_CI <- data.frame(n=rep(n,2), y=c(upper_CI, lower_CI), k=k)
+  df_lim <- data.frame(n=rep(n,2), y=c(upper_lim, lower_lim), bound=bound, k=k)
+  df_0.05 <- data.frame(n=rep(n,2), y=c(upper_CI_0.05, lower_CI_0.05), bound=bound, k=k)
   
   # create and return plot
   q <- ggplot(NULL, aes(n, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
   q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=n, colour="CI"))
   q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
-  q
+  return(list(plot = q, df_CI = df_CI, df_lim = df_lim, df_0.05 = df_0.05))
 }
 
 # like graph.nd, but without the simulation (since this takes a long time to run for large n)
@@ -210,5 +211,83 @@ graph.nd.no.sim <- function(n, k = 2, ratio = 0.1, ...) {
   q <- ggplot(NULL, aes(n, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
 #  q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=n, colour="CI"))
 #  q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
+  q
+}
+
+# function to print n graphs in a column (generic)
+nGraphsCol <- function(graphs) {
+  # graphs is a list of graphs
+  n <- length(graphs)
+  grid.newpage()
+  pushViewport(viewport(layout=grid.layout(n,1)))
+  vplayout <- function(x,y) viewport(layout.pos.row=x, layout.pos.col=y)
+  for (i in 1:n) {
+    print(graphs[[i]], vp=vplayout(i,1))
+  }
+}
+
+# function to print n graphs in a row (generic)
+nGraphsRow <- function(graphs) {
+  # graphs is a list of graphs
+  n <- length(graphs)
+  grid.newpage()
+  pushViewport(viewport(layout=grid.layout(1,n)))
+  vplayout <- function(x,y) viewport(layout.pos.row=x, layout.pos.col=y)
+  for (i in 1:n) {
+    print(graphs[[i]], vp=vplayout(1,i))
+  }
+}
+
+# facets a list of graphs by "k" or "d"
+# NB "k" or "d" must be different for each graph
+graph.n_facet <- function(graph_list, facet_by) {
+  # each item in graph_list must be the output from one of graph.n or graph.nd
+  # facet_by must be "k" or "d"
+  
+  len <- length(graph_list)
+  
+  df_lim <- graph_list[[1]]$df_lim
+  df_CI <- graph_list[[1]]$df_CI
+  df_0.05 <- graph_list[[1]]$df_0.05
+  
+  for (i in 2:len) {
+    df_lim <- rbind(df_lim, graph_list[[i]]$df_lim)
+    df_CI <- rbind(df_CI, graph_list[[i]]$df_CI)
+    df_0.05 <- rbind(df_0.05, graph_list[[i]]$df_0.05)
+  }
+  
+  q <- ggplot(NULL, aes(n, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
+  q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=n, colour="CI"))
+  q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
+  
+  if (facet_by == "k") q <- q + facet_grid(.~k, scales = "free")
+  if (facet_by == "d") q <- q + facet_grid(.~d, scales = "free")
+  q
+}
+
+# facets a list of graphs by "k" or "n"
+# NB "k" or "n" must be different for each graph
+graph.d_facet <- function(graph_list, facet_by) {
+  # each item in graph_list must be the output from one of graph.n or graph.nd
+  # facet_by must be "k" or "n"
+  
+  len <- length(graph_list)
+  
+  df_lim <- graph_list[[1]]$df_lim
+  df_CI <- graph_list[[1]]$df_CI
+  df_0.05 <- graph_list[[1]]$df_0.05
+  
+  for (i in 2:len) {
+    df_lim <- rbind(df_lim, graph_list[[i]]$df_lim)
+    df_CI <- rbind(df_CI, graph_list[[i]]$df_CI)
+    df_0.05 <- rbind(df_0.05, graph_list[[i]]$df_0.05)
+  }
+  
+  q <- ggplot(NULL, aes(d, y)) + geom_line(data=df_lim, aes(group=bound, colour="bound")) + geom_point(data=df_lim, aes(colour="bound")) 
+  q <- q + geom_point(data=df_CI, aes(colour="CI")) + geom_line(data=df_CI, aes(group=d, colour="CI"))
+  q <- q + geom_line(data=df_0.05, aes(group=bound, colour="CI +/- 0.05"), linetype="dashed") + geom_point(data=df_0.05, aes(colour = "CI +/- 0.05"))
+  
+  if (facet_by == "k") q <- q + facet_grid(.~k, scales = "free")
+  if (facet_by == "n") q <- q + facet_grid(.~n, scales = "free")
   q
 }

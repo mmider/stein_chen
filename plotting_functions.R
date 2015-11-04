@@ -7,7 +7,7 @@ source("Bday_problem.R")
 # helper function to calculate d as a function of n, keeping the ratio n^(k+1)/d^k constant 
 # (constant set by ratio argument)
 d.n.const.ratio <- function(n, k, ratio = 1.45) {
-  ((n^k)/ratio)^(1/(k+1))
+  floor(((n^k)/ratio)^(1/(k-1)))
 }
 
 # plots theoretical Stein-Chen limits and simulation CIs, for probability that no k people share a birthday,

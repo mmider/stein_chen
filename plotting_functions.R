@@ -6,8 +6,8 @@ source("Bday_problem.R")
 
 # helper function to calculate d as a function of n, keeping the ratio n^(k+1)/d^k constant 
 # (constant set by ratio argument)
-d.n.const.ratio <- function(n, k, ratio = 0.1) {
-  ((n^(1+k))/ratio)^(1/k)
+d.n.const.ratio <- function(n, k, ratio = 1.45) {
+  ((n^k)/ratio)^(1/(k+1))
 }
 
 # plots theoretical Stein-Chen limits and simulation CIs, for probability that no k people share a birthday,
@@ -112,7 +112,7 @@ graph.d <- function(n = 23, k = 2, d, ...) {
 # plots theoretical Stein-Chen limits and simulation CIs, for probability that no k people share a birthday,
 # for a range of n (number of people), with d (days in the year) s.t. the ratio n^(k+1)/d^k is kept constant,
 # (the value of that constant is the ratio argument)
-graph.nd <- function(n, k = 2, ratio = 0.1, ...) {
+graph.nd <- function(n, k = 2, ratio = 1.45, ...) {
   # n is a vector to loop over - each element is the number of people in the room for that iteration
   # k is the number of people who share a birthday
   # ratio is the value that n^(k+1)/d^k is to be kept constant at
@@ -128,7 +128,7 @@ graph.nd <- function(n, k = 2, ratio = 0.1, ...) {
   bound <- c(rep("upper", len_n), rep("lower", len_n))
   
   for (i in 1:len_n) {
-    # find value of d which keeps the ratio n^(k+1)/d^k constant (that constant is the ratio argument)
+    # find value of d which keeps the ratio n^k / d^(k-1) constant (that constant is the ratio argument)
     d <- d.n.const.ratio(n[i], k, ratio)
     
     # bootstrap simulation of probability that no k of the n[i] people share a birthday, from d possible birthdays
@@ -164,7 +164,7 @@ graph.nd <- function(n, k = 2, ratio = 0.1, ...) {
 }
 
 # like graph.nd, but without the simulation (since this takes a long time to run for large n)
-graph.nd.no.sim <- function(n, k = 2, ratio = 0.1, ...) {
+graph.nd.no.sim <- function(n, k = 2, ratio = 1.45, ...) {
   # n is a vector to loop over - each element is the number of people in the room for that iteration
   # k is the number of people who share a birthday
   # ratio is the value that n^(k+1)/d^k is to be kept constant at

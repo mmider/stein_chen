@@ -1,0 +1,6 @@
+\beamer@endinputifotherversion {3.36pt}
+\beamer@sectionintoc {1}{Theory}{2}{0}{1}
+\beamer@sectionintoc {2}{Applications}{14}{0}{2}
+\beamer@subsectionintoc {2}{1}{The Birthday Problem}{14}{0}{2}
+\beamer@subsectionintoc {2}{2}{DNA}{37}{0}{2}
+\beamer@subsectionintoc {2}{3}{Longest Head Run}{47}{0}{2}
